@@ -22,5 +22,5 @@
 Remember that cookies can expire! So, if your session does not work, delete the telegram-session.json and log-in again.
 
 <div align="center">
-  <img src="./images/Playwright-logo.png" alt="Playwright Logo" width="200">
+  <img src="./images/Playwright-logo.png" alt="Playwright Logo" width="400">
 </div>
