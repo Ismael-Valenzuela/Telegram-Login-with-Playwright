@@ -19,8 +19,6 @@
 
 # ⚠️ THINGS TO CONSIDER ⚠️
 
-Remember that cookies can expire! So, if your session does not work, delete the telegram-session.json and log-in again.  
+Remember that cookies can expire! So, if your session does not work, delete the telegram-session.json and log-in again.
 
-
-![Playwright Logo](./images/Playwright-logo.png)
-
+<img src="./images/Playwright-logo.png" style="border-radius: 1.5rem;">
