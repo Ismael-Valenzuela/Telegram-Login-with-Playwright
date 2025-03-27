@@ -21,4 +21,4 @@
 
 Remember that cookies can expire! So, if your session does not work, delete the telegram-session.json and log-in again.
 
-<img src="./images/Playwright-logo.png" style="border-radius: 1.5rem;">
+<img src="./images/Playwright-logo.png" style="text-align: center;">
