@@ -18,7 +18,6 @@
 
   **(⚠️ MAKE SURE TO HAVE NODE INSTALLED: https://nodejs.org/es ⚠️)**
 
-- Now, all the session files will be encrypted and secure in your local machine. To decript one of those files you will neex the SECRET_KEY that you put when you created the session, that is why is important to create the enviroment variable.
 - We need to log in Telegram manually to save the cookies in your local folder. The command you have to execute is:
 
   ```bash
