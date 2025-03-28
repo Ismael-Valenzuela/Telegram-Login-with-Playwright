@@ -2,32 +2,10 @@ require("dotenv").config();
 import { test, devices, Page, BrowserContext } from "@playwright/test";
 import * as crypto from "crypto";
 import * as fs from "fs";
-
-const myKey: any = process.env.SECRET_KEY; // Here we are using the secret key from the .env file that MUST BE 32 CHARACTERS
-const SECRET_KEY = crypto.createHash("sha256").update(myKey).digest();
-const ALGORITHM = "aes-256-cbc";
-const IV = crypto.randomBytes(16);
-
-// Function to encrypt a file
-function encryptFile(inputPath: string, outputPath: string) {
-  const data = fs.readFileSync(inputPath, "utf8");
-  const cipher = crypto.createCipheriv(ALGORITHM, SECRET_KEY, IV);
-  let encrypted = cipher.update(data, "utf8", "hex");
-  encrypted += cipher.final("hex");
-
-  const encryptedData = {
-    iv: IV.toString("hex"),
-    content: encrypted,
-  };
-
-  fs.writeFileSync(outputPath, JSON.stringify(encryptedData, null, 2));
-  console.log(`Archivo encriptado guardado en: ${outputPath}`);
-}
-
 // This is the test of login
-const timeToLogin : number = 60000; // This is the max time you have to login manually, IF YOU NEED MORE TIME, CHANGE THIS VALUE TO A BIGGER ONE
+const timeToLogin: number = 60000; // This is the max time you have to login manually, IF YOU NEED MORE TIME, CHANGE THIS VALUE TO A BIGGER ONE
 test("Save session of TG", async ({ browser }) => {
-  test.setTimeout(timeToLogin);
+  test.setTimeout(timeToLogin + 10000);
   const context: BrowserContext = await browser.newContext({
     ...devices["iPhone 12"],
   });
@@ -35,18 +13,55 @@ test("Save session of TG", async ({ browser }) => {
 
   await page.goto("https://web.telegram.org/");
   console.log("Please, log in Telegram manually. (You have 60 seconds)");
-  await page.waitForTimeout(timeToLogin);
 
-  // Save the session
+  try {
+    await Promise.race([
+      page.waitForSelector("#main-columns", { timeout: timeToLogin }),
+      page.waitForSelector("#Main", { timeout: timeToLogin }),
+    ]);
+    console.log("Login detected. Proceeding...");
+  } catch (error) {
+    console.error("Login not detected. Timeout or incorrect selectors.");
+    throw new Error("Login failed: #main-columns or #Main not found.");
+  }
+
+  // Save the session creating a .env file
   const sessionPath = "crypto/telegram-session.json";
-  await context.storageState({ path: sessionPath }); // Here is where the session is saved inside the storage State of the Browser so we can use it later
+  const storageState = await context.storageState();
+  console.log("Session saved in: ", storageState);
 
-  // Encrypt the session
-  const encryptedPath = "crypto/telegram-session.enc.json";
-  encryptFile(sessionPath, encryptedPath);
+  const cookiesString = JSON.stringify(storageState);
+  const envPath = ".env";
+  try {
+    if (fs.existsSync(envPath)) {
+      // Leer el contenido actual del archivo .env
+      let envContent = fs.readFileSync(envPath, "utf8");
 
-  // Delete the original session
-  fs.unlinkSync(sessionPath);
+      // Reemplazar o agregar la línea de TELEGRAM_SESSION_COOKIE
+      if (envContent.includes("TELEGRAM_SESSION_COOKIE=")) {
+        envContent = envContent.replace(
+          /TELEGRAM_SESSION_COOKIE=.*/g,
+          `TELEGRAM_SESSION_COOKIE=${cookiesString}`
+        );
+      } else {
+        envContent += `\nTELEGRAM_SESSION_COOKIE=${cookiesString}`;
+      }
 
+      // Escribir el contenido actualizado en el archivo .env
+      fs.writeFileSync(envPath, envContent, { flag: "w" });
+    } else {
+      // Crear el archivo .env si no existe
+      fs.writeFileSync(envPath, `TELEGRAM_SESSION_COOKIE=${cookiesString}\n`, {
+        flag: "w",
+      });
+    }
+
+    console.log("Cookies guardadas o actualizadas en el archivo .env");
+  } catch (error) {
+    console.error(
+      "Error al guardar o actualizar las cookies en el archivo .env:",
+      error
+    );
+  }
   await browser.close();
 });

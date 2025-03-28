@@ -18,13 +18,6 @@
 
   **(⚠️ MAKE SURE TO HAVE NODE INSTALLED: https://nodejs.org/es ⚠️)**
 
-- Once we installed everything, we have to create a folder named **.env**
-- Inside **.env** we are going to create the next enviroment variable:
-
-  ```bash
-    SECRET_KEY="Insert_here_a_key_with_32_characters"
-  ```
-
 - Now, all the session files will be encrypted and secure in your local machine. To decript one of those files you will neex the SECRET_KEY that you put when you created the session, that is why is important to create the enviroment variable.
 - We need to log in Telegram manually to save the cookies in your local folder. The command you have to execute is:
 
@@ -34,8 +27,8 @@
 
   **(⚠️ Also make sure you are inside the clone folder ⚠️)**
 
-- You have 60 seconds to log-in. If you need more time, modify the script inside the tests files changing the values. **(⚠️ DO NOT CLOSE THE WINDOW, NOT EVEN IF YOU ALREADY LOGGED IN. JUST WAIT FOR THE TEST TO CLOSE IT AUTOMATICALLY ⚠️)**
-- Once you do this, a folder called **"telegram-session.json"** should be created inside the folder.
+- You have 60 seconds to log-in. If you need more time, modify the script inside the tests files changing the values. **Once you log-in, the test will finish automatically**
+- After that, the cookies will be saved inside a folder called **.env** inside your repository. **(⚠️ THAT IS YOUR SESSION OF TELEGRAM, BE SURE TO NOT SHARE ANY OF THE .ENV DATA ⚠️)**
 - After checking if the JSON is created. Enjoy making your tests with your account already logged executing this command:
   ```bash
   npx playwright test tests/already-logged.spec.ts
