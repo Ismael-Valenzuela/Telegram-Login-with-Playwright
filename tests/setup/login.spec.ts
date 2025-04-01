@@ -1,6 +1,5 @@
 require("dotenv").config();
 import { test, devices, Page, BrowserContext } from "@playwright/test";
-import * as crypto from "crypto";
 import * as fs from "fs";
 // This is the test of login
 const timeToLogin: number = 60000; // This is the max time you have to login manually, IF YOU NEED MORE TIME, CHANGE THIS VALUE TO A BIGGER ONE
@@ -25,8 +24,6 @@ test("Save session of TG", async ({ browser }) => {
     throw new Error("Login failed: #main-columns or #Main not found.");
   }
 
-  // Save the session creating a .env file
-  const sessionPath = "crypto/telegram-session.json";
   const storageState = await context.storageState();
   console.log("Session saved in: ", storageState);
 
